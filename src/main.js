@@ -4,7 +4,11 @@ import Vue from 'vue'
 import FastClick from 'fastclick'
 import router from './router'
 import App from './App'
+import './utils/permission'
+import 'font-awesome/css/font-awesome.css'
 import Icon from 'vue-svg-icon/Icon.vue'
+import 'static/styles/cixi518.less'
+
 Vue.component('icon', Icon)
 
 FastClick.attach(document.body)

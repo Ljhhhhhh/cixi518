@@ -1,0 +1,56 @@
+<!--修改界面-->
+<div>
+	<form method="post" class="form" action="{:url('cixi/order/updateorder')}">
+	修改内容页面
+	<table border="1">
+		<tr><td colspan="6">客户查看修改</td>
+		<tr>
+			<input type="hidden" value="{$customerres.id}" name="up_id">
+			<td>姓名</td>
+			<td><input type="text" value="{$customerres.cus_name}" name="up_name" {if $look}readonly{/if}></td>
+			<td>邮箱</td>
+			<td><input type="text" value="{$customerres.cus_email}" name="up_email" {if $look}readonly{/if}></td>
+			<td>生日</td>
+			<td><input type="text" value="{$customerres.cus_birthday}" name="up_birthday" {if $look}readonly{/if}></td>
+		</tr>
+
+		<tr>
+			<td>联系方式</td>
+			<td><input type="text" value="{$customerres.cus_telphone}" name="up_number" {if $look}readonly{/if}></td>
+			<td>地址</td>
+			<td><input type="text" value="{$customerres.cus_address}"  name="up_customername" {if $look}readonly{/if}></td>
+		</tr>
+
+		<tr>
+			<td colspan="6">客户订单</td>
+		</tr>
+		<tr>
+			<td>长</td>
+			<td>宽</td>
+			<td>高</td>
+			<td>单价</td>
+			<td>数量</td>
+			<td>总价</td>
+		</tr>
+		{foreach name="orderres.products" item="rs" key="k"} 
+		<tr>
+			<input type="hidden" value="{$rs.id}" name="orderproduct[{$rs.id}][id]">
+			<td><input type="text" value="{$rs.pro_long}" name="orderproduct[{$rs.id}][pro_long]" {if $look}readonly{/if}></td>
+			<td><input type="text" value="{$rs.pro_wide}" name="orderproduct[{$rs.id}][pro_wide]" {if $look}readonly{/if}></td>
+			<td><input type="text" value="{$rs.pro_high}" name="orderproduct[{$rs.id}][pro_high]" {if $look}readonly{/if}></td>
+			<td><input type="text" value="{$rs.price}" data-cusid="" name="orderproduct[{$rs.id}][price]" {if $look}readonly{/if}></td>
+			<td><input type="text" value="{$rs.amount}" data-cusid="" name="orderproduct[{$rs.id}][amount]}" {if $look}readonly{/if}></td>
+			<td><input type="text" value="{$rs.allpay}" name="orderproduct[{$rs.id}][allpay]" readonly></td>
+		</tr>
+		{/foreach}
+
+		{if !$look}
+		<tr>
+			<td colspan="4">
+				<input type="submit" data-id="{$orderres.order_id}" value="提交修改">
+			</td>
+		</tr>
+		{/if}
+	</table>
+	</form>
+</div>

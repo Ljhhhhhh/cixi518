@@ -1,0 +1,101 @@
+{include file="index/header" title="订单管理" /}
+
+
+<div>
+
+<div>
+	<h3 style="color:red">查询</h3><a href="/cixi/order/addorderpage">返回价格计算</a>
+	<form method="post" action="{:url('cixi/order/orderlist')}">
+	编号:<input type="text" name="number" id="number">
+	客户:<input type="text" name="customer" id="customer">
+	<input type="submit" value="提交查询" id="setorder">
+	</form>
+</div>
+
+<table border="1">
+<tr>
+	<th width="120px">订单编号</th>
+	<th width="110px">创建人</th>
+	<th width="120px">客户</th>
+	<th width="230px">下单日期</th>
+	<th width="150px">操作</th>
+</tr>
+{foreach name="list" item="rs" key="k"} 
+<tr>
+	<td>{$rs['order_number']}</td>
+	<td>{$rs['createbyname']}</td>
+	<td>{$rs['customer_name']}</td>
+	<td>{$rs['create_time']}</td>
+	<td id="{$rs['order_id']}" data-id="{$rs['order_id']}" data-number="{$rs['order_number']}"><span class="lookorder">查看</span> | <span class="updateorder">修改</span> | <span class="deleteorder">作废</span></td>
+</tr>
+{/foreach}
+</table>
+
+<!--查看界面-->
+<div id="lookeorder_yemian">
+</div>
+
+<div id="updateorder_yemian">
+</div>
+
+
+</div>
+
+
+{include file="index/footer"/}
+<script>
+//查看
+$(".lookorder").click(function(){
+	var orderid = $(this).parent().data('id');
+	var ordernumber = $(this).parent().data('number');
+
+	$.ajax({
+		type:'post',
+		url:'/cixi/order/orderinfo/order_id/'+orderid,
+		data:{
+			type:'look'
+		},
+		success:function(data){
+			//console.log(data);
+			$("#lookeorder_yemian").html(data); 
+		}
+	});
+});
+
+//修改
+$(".updateorder").click(function(){
+	var orderid = $(this).parent().data('id');
+	var ordernumber = $(this).parent().data('number');
+
+	$.ajax({
+		type:'post',
+		url:'/cixi/order/orderinfo/order_id/'+orderid,
+		success:function(data){
+			//console.log(data);
+			$("#updateorder_yemian").html(data); 
+		}
+	});
+});
+
+//作废
+$(".deleteorder").click(function(){
+	var orderid = $(this).parent().data('id');
+	var ordernumber = $(this).parent().data('number');
+	var r=confirm("是否将订单 "+ordernumber+" 作废");
+	if (r==true){
+	  	$.ajax({
+			type:'post',
+			url:'/cixi/order/deleteorder/order_id/'+orderid,
+			success:function(data){
+				//console.log(data);
+				if(1 == data) {
+					alert('已作废');
+					window.location.reload();
+				}
+			}
+		});
+	}else {
+	    
+	}
+});
+</script>

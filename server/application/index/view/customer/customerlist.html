@@ -1,0 +1,128 @@
+{include file="index/header" title="创建客户" /}
+
+</head>
+<body>
+<h2 id="manage_customer">客户管理</h2>
+
+<div>
+	<h3 style="color:red">查询</h3><a href="/cixi/order/addorderpage">返回价格计算</a>
+
+	<form method="post" action="{:url('cixi/customer/customerlist')}">
+	客户姓名:<input type="text" name="cus_name" id="cus_name">
+	客户电话:<input type="text" name="cus_telphone" id="cus_telphone">
+	<input type="submit" value="提交查询" id="setcustomer">
+	</form>
+	<input type="button" value="新增客户" class="showaddcus">
+</div>
+
+<div>
+<table border="1">
+<tr>
+	<th width="120px">姓名</th>
+	<th width="110px">电话</th>
+	<th width="120px">邮箱</th>
+	<th width="130px">生日</th>
+	<th width="130px">地址</th>
+	<th width="150px">操作</th>
+</tr>
+{foreach name="list" item="rs" key="k"} 
+<tr class="customers" data-id="{$rs['id']}">
+	<td>{$rs['cus_name']}</td>
+	<td>{$rs['cus_telphone']}</td>
+	<td>{$rs['cus_email']}</td>
+	<td>{$rs['cus_birthday']}</td>
+	<td>{$rs['cus_address']}</td>
+	<td id="{$rs['id']}"><span class="lookcustomer">查看</span> | <span class="updatecustomer">修改</span> | <span class="deletecustomer">作废</span></td>
+</tr>
+{/foreach}
+</table>
+</div>
+
+<div id="add_new_customer" style="display:none">
+<h2>创建客户</h2>
+<FORM method="post" class="form" action="{:url('cixi/customer/add')}">
+昵 称：<INPUT type="text" class="text" name="cus_name"><br/>
+邮 箱：<INPUT type="text" class="text" name="cus_email"><br/>
+生 日：<INPUT type="text" class="text" name="cus_birthday"><br/>
+电 话：<INPUT type="text" class="text" name="cus_telphone"><br/>
+地 址：<INPUT type="text" class="text" name="cus_address"><br/>
+<INPUT type="submit" class="btn" value=" 提交 ">
+</FORM>
+<div>
+
+{include file="index/footer"/}
+
+<script>
+$(".showaddcus").click(function(){
+	$("#add_new_customer").show();
+});
+
+//点击客户行
+$(".customers").click(function(){
+	var customer_id = $(this).data('id');   //点击客户id
+	$.ajax({
+		type:'post',
+		url:'/cixi/customer/cusinfo/cus_id/'+customer_id,
+		success:function(data){
+			console.log(data);     //data 返回客户信息和客户的订单信息
+		}
+	});
+});
+
+
+
+//查看
+$(".lookorder").click(function(){
+	var orderid = $(this).parent().data('id');
+	var ordernumber = $(this).parent().data('number');
+
+	$.ajax({
+		type:'post',
+		url:'/cixi/order/orderinfo/order_id/'+orderid,
+		data:{
+			type:'look'
+		},
+		success:function(data){
+			//console.log(data);
+			$("#lookeorder_yemian").html(data); 
+		}
+	});
+});
+
+//修改
+$(".updateorder").click(function(){
+	var orderid = $(this).parent().data('id');
+	var ordernumber = $(this).parent().data('number');
+
+	$.ajax({
+		type:'post',
+		url:'/cixi/order/orderinfo/order_id/'+orderid,
+		success:function(data){
+			//console.log(data);
+			$("#updateorder_yemian").html(data); 
+		}
+	});
+});
+
+//作废
+$(".deleteorder").click(function(){
+	var orderid = $(this).parent().data('id');
+	var ordernumber = $(this).parent().data('number');
+	var r=confirm("是否将订单 "+ordernumber+" 作废");
+	if (r==true){
+	  	$.ajax({
+			type:'post',
+			url:'/cixi/order/deleteorder/order_id/'+orderid,
+			success:function(data){
+				//console.log(data);
+				if(1 == data) {
+					alert('已作废');
+					window.location.reload();
+				}
+			}
+		});
+	}else {
+	    
+	}
+});
+</script>

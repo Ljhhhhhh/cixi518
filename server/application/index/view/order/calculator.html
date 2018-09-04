@@ -1,0 +1,149 @@
+{include file="index/header" title="商品计算" /}
+
+
+<a href="/cixi/order/orderlist">订单管理</a>
+<a href="/cixi/customer/customerlist" id="add_customers">客户管理</a>
+<h2>价格计算器</h2>
+<FORM method="post" class="form" action="{:url('cixi/order/add')}">
+ 长 ：<INPUT type="text" class="text" name="long"><br/>
+ 宽 ：<INPUT type="text" class="text" name="wide"><br/>
+ 高 ：<INPUT type="text" class="text" name="high"><br/>
+
+数量：<INPUT type="text" class="text" name="amount"><br/>
+
+
+
+<!-- <INPUT type="submit" class="btn" value=" 新建订单 "> -->
+<input type="button" id="addneworder" value=" 新建订单 ">
+<input type="button" id="addtoorder" value=" 加入到订单 ">
+</FORM>
+
+
+<div id="sel_customer" style="display:none">
+	<!-- <a href="/cixi/customer/customerlist" id="add_customers">客户管理</a> -->
+	<table border="1" id="customer_select">
+		<tr>
+			<th>客户姓名</th>
+			<th>客户地址</th>
+			<th>联系方式</th>
+		</tr>
+		{foreach name="cusarray" item="rs" key="k"} 
+		<tr id="{$rs->id}" class="order_customer">
+			<td>{$rs->cus_name}</td>
+			<td>{$rs->cus_address}</td>
+			<td>{$rs->cus_telphone}</td>
+		</tr>
+		{/foreach}
+	</table>
+
+	<input type="button" id="neworder" value="生成订单">
+</div>
+
+<div id="sel_order" style="display:none">
+	<table border="1" id="customer_select">
+		<tr>
+			<th>订单编号</th>
+			<th>客户</th>
+			<th>下单时间</th>
+			<th>操作</th>
+		</tr>
+		{foreach name="orderarray" item="rs" key="k"} 
+		<tr id="{$rs->order_id}" class="order_customer">
+			<td>{$rs->order_number}</td>
+			<td>{$rs->createbyname}</td>
+			<td>{$rs->create_time}</td>
+			<td class="addorderproducts" data-id="{$rs->order_id}" data-number="{$rs->order_number}">商品加入到此订单</td>
+		</tr>
+		{/foreach}
+	</table>
+</div>
+
+
+
+{include file="index/footer"/}
+
+<script>
+
+$("#addneworder").click(function(){
+  $("#sel_customer").show();
+  $("#sel_order").hide();
+});
+$("#addtoorder").click(function(){
+  $("#sel_order").show();
+  $("#sel_customer").hide();
+});
+
+
+//生成新订单
+$("#neworder").click(function(){
+
+	var customer_id = 1;     //客户id
+	var customer_name = '客户1'    //客户姓名
+	var longs = 1;
+	var wides = 2;
+	var highs = 3;
+	var price = 4.44;
+	var amount = 5;
+
+	$.ajax({
+		type:'post',
+		url:'/cixi/order/addneworder',
+		data:{
+			customer_id:customer_id,
+			customer_name:customer_name,
+			longs:longs,
+			wides:wides,
+			highs:highs,
+			price:price,
+			amount:amount
+		},
+		success:function(data){
+			console.log(data);
+		}
+	});
+});
+
+
+//新增客户
+/*$("#add_customers").click(function(){
+	$.ajax({
+		type:'post',
+		url:'/cixi/customer/addcustomer',
+		success:function(data){
+
+		}
+	})
+});*/
+
+//商品加入到订单中
+$(".addorderproducts").click(function(){
+	var number = $(this).data('number');
+	var id = $(this).data('id');      //订单id
+	var r=confirm("商品是否加入到"+number+"订单中");
+
+	var longs = 1.1;
+	var wides = 2.2;
+	var highs = 3.3;
+	var price = 4.56;
+	var amount = 55;
+
+	if (r==true){
+	  	$.ajax({
+			type:'post',
+			url:'/cixi/order/addtoorder/order_id/'+id,
+			data:{
+				pro_long:longs,
+				pro_wide:wides,
+				pro_high:highs,
+				price:price,
+				amount:amount
+			},
+			success:function(data){
+				console.log(data);
+			}
+		});
+	}else {
+	    
+	}
+})
+</script>
